@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Katalog Produk Responsif</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+
+    <!-- Font Awesome 6 (Gratis) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        /* ===== CUSTOM STYLES ===== */
+
+        /* 1. Typography dengan clamp() — memenuhi requirement #7 */
+        .hero-title {
+            font-size: clamp(2rem, 6vw, 4rem);
+            line-height: 1.2;
+        }
+        .section-title {
+            font-size: clamp(1.5rem, 3.5vw, 2.75rem);
+            line-height: 1.25;
+        }
+        .card-title {
+            font-size: clamp(1rem, 1.4vw, 1.25rem);
+            line-height: 1.3;
+        }
+        .card-price {
+            font-size: clamp(1.125rem, 1.6vw, 1.5rem);
+            font-weight: 700;
+        }
+        .card-desc {
+            font-size: clamp(0.8rem, 1vw, 0.95rem);
+            line-height: 1.5;
+        }
+        .footer-text {
+            font-size: clamp(0.8rem, 1vw, 0.95rem);
+        }
+        .nav-link-text {
+            font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+        }
+
+        /* 2. Animasi hamburger (toggle) */
+        .hamburger-active .bar1 {
+            transform: rotate(-45deg) translate(-6px, 6px);
+        }
+        .hamburger-active .bar2 {
+            opacity: 0;
+        }
+        .hamburger-active .bar3 {
+            transform: rotate(45deg) translate(-6px, -6px);
+        }
+
+        .bar1,
+        .bar2,
+        .bar3 {
+            display: block;
+            width: 26px;
+            height: 3px;
+            margin: 5px 0;
+            background-color: #e8425b;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* 3. Smooth transition untuk mobile menu */
+        #mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+            opacity: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        #mobile-menu.open {
+            max-height: 500px;
+            opacity: 1;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        /* 4. Card hover effect */
+        .product-card {
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -12px rgba(65, 6, 6, 0.2);
+        }
+
+        /* 5. Responsive image — object-fit cover + aspect-ratio */
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        @media (min-width: 640px) {
+            .product-img {
+                height: 220px;
+            }
+        }
+        @media (min-width: 768px) {
+            .product-img {
+                height: 240px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .product-img {
+                height: 260px;
+            }
+        }
+
+        /* 6. Scroll behavior & smooth */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 7. Tombol add to cart efek */
+        .btn-cart {
+            transition: background-color 0.2s ease, transform 0.15s ease;
+        }
+        .btn-cart:active {
+            transform: scale(0.94);
+        }
+
+        /* 8. Navbar shadow halus */
+        .navbar-shadow {
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ============================================================ -->
+    <!-- NAVBAR RESPONSIF — hamburger di mobile (req #5)               -->
+    <!-- ============================================================ -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md navbar-shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+
+                <!-- Brand -->
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-cube text-indigo-600 text-2xl"></i>
+                    <span class="font-bold text-gray-800 text-lg tracking-tight">Katalog<span class="text-indigo-600">Pro</span></span>
+                </div>
+
+                <!-- Desktop Nav (hidden on mobile) -->
+                <nav class="hidden md:flex items-center gap-8" aria-label="Navigasi utama">
+                    <a href="#" class="nav-link-text text-gray-700 hover:text-indigo-600 font-medium transition-colors">Beranda</a>
+                    <a href="#produk" class="nav-link-text text-gray-700 hover:text-indigo-600 font-medium transition-colors">Produk</a>
+                    <a href="#tentang" class="nav-link-text text-gray-700 hover:text-indigo-600 font-medium transition-colors">Tentang</a>
+                    <a href="#kontak" class="nav-link-text text-gray-700 hover:text-indigo-600 font-medium transition-colors">Kontak</a>
+                    <a href="#" class="bg-indigo-600 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm">
+                        <i class="fa-solid fa-cart-shopping mr-1.5"></i>Keranjang
+                    </a>
+                </nav>
+
+                <!-- Hamburger button (mobile only) -->
+                <button id="hamburger-btn" class="md:hidden flex flex-col items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors" aria-label="Toggle menu" aria-expanded="false">
+                    <span class="bar1"></span>
+                    <span class="bar2"></span>
+                    <span class="bar3"></span>
+                </button>
+
+            </div>
+
+            <!-- Mobile Menu (collapsible) -->
+            <div id="mobile-menu" class="md:hidden border-t border-gray-100">
+                <div class="flex flex-col gap-3 py-2">
+                    <a href="#" class="nav-link-text text-gray-700 hover:text-indigo-600 font-medium transition-colors px-2 py-1.5 rounded hover:bg-gray-50">Beranda</a>
+                    <a href="#produk" class="nav-link-text text-gray-700 hover:text-indigo-600 font-medium transition-colors px-2 py-1.5 rounded hover:bg-gray-50">Produk</a>
+                    <a href="#tentang" class="nav-link-text text-gray-700 hover:text-indigo-600 font-medium transition-colors px-2 py-1.5 rounded hover:bg-gray-50">Tentang</a>
+                    <a href="#kontak" class="nav-link-text text-gray-700 hover:text-indigo-600 font-medium transition-colors px-2 py-1.5 rounded hover:bg-gray-50">Kontak</a>
+                    <a href="#" class="bg-indigo-600 text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-indigo-700 transition-colors text-center shadow-sm mt-1">
+                        <i class="fa-solid fa-cart-shopping mr-1.5"></i>Keranjang
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- HERO / BANNER                                                 -->
+    <!-- ============================================================ -->
+    <section class="bg-gradient-to-br from-indigo-50 via-white to-blue-50 py-12 md:py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="hero-title font-extrabold text-gray-800 mb-4 tracking-tight">
+                Temukan <span class="text-indigo-600">Produk</span> Favoritmu
+            </h1>
+            <p class="text-gray-600 max-w-2xl mx-auto text-base sm:text-lg mb-8">
+                Koleksi terbaik dari berbagai kategori. Kualitas premium, harga terjangkau.
+            </p>
+            <a href="#produk" class="inline-flex items-center gap-2 bg-indigo-600 text-white px-8 py-3.5 rounded-full font-semibold hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-200">
+                Lihat Produk <i class="fa-solid fa-arrow-right text-sm"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- KATALOG PRODUK — GRID RESPONSIF 1→2→3→4 kolom (req #3 & #4)  -->
+    <!-- ============================================================ -->
+    <section id="produk" class="py-12 md:py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Section title dengan clamp() -->
+            <div class="text-center mb-12">
+                <h2 class="section-title font-bold text-gray-800">
+                    <i class="fa-solid fa-tag text-indigo-500 mr-2"></i>Katalog Produk
+                </h2>
+                <p class="text-gray-500 mt-2 text-sm md:text-base">Pilih produk sesuai kebutuhan Anda</p>
+            </div>
+
+            <!--
+            GRID RESPONSIF:
+            - Mobile (default) : 1 kolom
+            - sm (640px)       : 2 kolom  (breakpoint 1)
+            - md (768px)       : 3 kolom  (breakpoint 2)
+            - lg (1024px)      : 4 kolom  (breakpoint 3)
+            Memenuhi req #2 & #3
+            -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8" id="product-grid">
+
+                <!-- ===== PRODUCT CARD 1 ===== -->
+                <div class="product-card bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100/80 overflow-hidden flex flex-col">
+                    <div class="relative overflow-hidden bg-gray-100">
+                        <img
+                        src="https://picsum.photos/seed/phone/600/400"
+                        alt="Smartphone X"
+                        class="product-img"
+                        loading="lazy"
+                        width="600"
+                        height="400"
+                        />
+                        <span class="absolute top-3 left-3 bg-indigo-600 text-white text-xs font-semibold px-3 py-1 rounded-full">Baru</span>
+                    </div>
+                    <div class="p-4 md:p-5 flex flex-col flex-1">
+                        <h3 class="card-title font-semibold text-gray-800">Smartphone X</h3>
+                        <p class="card-desc text-gray-500 mt-1 flex-1">Layar 6.5", RAM 12GB, kamera 108MP</p>
+                        <div class="mt-3 flex items-end justify-between">
+                            <span class="card-price text-indigo-600">Rp4.999.000</span>
+                            <button class="btn-cart bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm shadow-indigo-200 transition-all">
+                                <i class="fa-solid fa-plus mr-1"></i> Beli
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== PRODUCT CARD 2 ===== -->
+                <div class="product-card bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100/80 overflow-hidden flex flex-col">
+                    <div class="relative overflow-hidden bg-gray-100">
+                        <img
+                        src="https://picsum.photos/seed/laptop/600/400"
+                        alt="Laptop Pro"
+                        class="product-img"
+                        loading="lazy"
+                        width="600"
+                        height="400"
+                        />
+                        <span class="absolute top-3 left-3 bg-green-500 text-white text-xs font-semibold px-3 py-1 rounded-full">Best Seller</span>
+                    </div>
+                    <div class="p-4 md:p-5 flex flex-col flex-1">
+                        <h3 class="card-title font-semibold text-gray-800">Laptop Pro</h3>
+                        <p class="card-desc text-gray-500 mt-1 flex-1">Intel Core i7, 16GB RAM, SSD 512GB</p>
+                        <div class="mt-3 flex items-end justify-between">
+                            <span class="card-price text-indigo-600">Rp13.999.000</span>
+                            <button class="btn-cart bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm shadow-indigo-200 transition-all">
+                                <i class="fa-solid fa-plus mr-1"></i> Beli
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== PRODUCT CARD 3 ===== -->
+                <div class="product-card bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100/80 overflow-hidden flex flex-col">
+                    <div class="relative overflow-hidden bg-gray-100">
+                        <img
+                        src="https://picsum.photos/seed/headphone/600/400"
+                        alt="Headphone Wireless"
+                        class="product-img"
+                        loading="lazy"
+                        width="600"
+                        height="400"
+                        />
+                    </div>
+                    <div class="p-4 md:p-5 flex flex-col flex-1">
+                        <h3 class="card-title font-semibold text-gray-800">Headphone Wireless</h3>
+                        <p class="card-desc text-gray-500 mt-1 flex-1">ANC, baterai 40 jam, koneksi Bluetooth 5.2</p>
+                        <div class="mt-3 flex items-end justify-between">
+                            <span class="card-price text-indigo-600">Rp2.299.000</span>
+                            <button class="btn-cart bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm shadow-indigo-200 transition-all">
+                                <i class="fa-solid fa-plus mr-1"></i> Beli
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== PRODUCT CARD 4 ===== -->
+                <div class="product-card bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100/80 overflow-hidden flex flex-col">
+                    <div class="relative overflow-hidden bg-gray-100">
+                        <img
+                        src="https://picsum.photos/seed/watch/600/400"
+                        alt="Smart Watch"
+                        class="product-img"
+                        loading="lazy"
+                        width="600"
+                        height="400"
+                        />
+                        <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-semibold px-3 py-1 rounded-full">Diskon</span>
+                    </div>
+                    <div class="p-4 md:p-5 flex flex-col flex-1">
+                        <h3 class="card-title font-semibold text-gray-800">Smart Watch</h3>
+                        <p class="card-desc text-gray-500 mt-1 flex-1">Lacak kesehatan, GPS, tahan air 5ATM</p>
+                        <div class="mt-3 flex items-end justify-between">
+                            <span class="card-price text-indigo-600">Rp3.499.000</span>
+                            <button class="btn-cart bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm shadow-indigo-200 transition-all">
+                                <i class="fa-solid fa-plus mr-1"></i> Beli
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== PRODUCT CARD 5 ===== -->
+                <div class="product-card bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100/80 overflow-hidden flex flex-col">
+                    <div class="relative overflow-hidden bg-gray-100">
+                        <img
+                        src="https://picsum.photos/seed/tablet/600/400"
+                        alt="Tablet Mini"
+                        class="product-img"
+                        loading="lazy"
+                        width="600"
+                        height="400"
+                        />
+                    </div>
+                    <div class="p-4 md:p-5 flex flex-col flex-1">
+                        <h3 class="card-title font-semibold text-gray-800">Tablet Mini</h3>
+                        <p class="card-desc text-gray-500 mt-1 flex-1">Layar 10.5", baterai tahan lama, stylus support</p>
+                        <div class="mt-3 flex items-end justify-between">
+                            <span class="card-price text-indigo-600">Rp3.999.000</span>
+                            <button class="btn-cart bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm shadow-indigo-200 transition-all">
+                                <i class="fa-solid fa-plus mr-1"></i> Beli
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== PRODUCT CARD 6 ===== -->
+                <div class="product-card bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100/80 overflow-hidden flex flex-col">
+                    <div class="relative overflow-hidden bg-gray-100">
+                        <img
+                        src="https://picsum.photos/seed/speaker/600/400"
+                        alt="Speaker Bluetooth"
+                        class="product-img"
+                        loading="lazy"
+                        width="600"
+                        height="400"
+                        />
+                    </div>
+                    <div class="p-4 md:p-5 flex flex-col flex-1">
+                        <h3 class="card-title font-semibold text-gray-800">Speaker Bluetooth</h3>
+                        <p class="card-desc text-gray-500 mt-1 flex-1">Suara 360°, tahan debu & air, baterai 20 jam</p>
+                        <div class="mt-3 flex items-end justify-between">
+                            <span class="card-price text-indigo-600">Rp999.000</span>
+                            <button class="btn-cart bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm shadow-indigo-200 transition-all">
+                                <i class="fa-solid fa-plus mr-1"></i> Beli
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== PRODUCT CARD 7 ===== -->
+                <div class="product-card bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100/80 overflow-hidden flex flex-col">
+                    <div class="relative overflow-hidden bg-gray-100">
+                        <img
+                        src="https://picsum.photos/seed/powerbank/600/400"
+                        alt="Power Bank"
+                        class="product-img"
+                        loading="lazy"
+                        width="600"
+                        height="400"
+                        />
+                    </div>
+                    <div class="p-4 md:p-5 flex flex-col flex-1">
+                        <h3 class="card-title font-semibold text-gray-800">Power Bank 20.000mAh</h3>
+                        <p class="card-desc text-gray-500 mt-1 flex-1">Fast charging 65W, port USB-C & A</p>
+                        <div class="mt-3 flex items-end justify-between">
+                            <span class="card-price text-indigo-600">Rp549.000</span>
+                            <button class="btn-cart bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm shadow-indigo-200 transition-all">
+                                <i class="fa-solid fa-plus mr-1"></i> Beli
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== PRODUCT CARD 8 ===== -->
+                <div class="product-card bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100/80 overflow-hidden flex flex-col">
+                    <div class="relative overflow-hidden bg-gray-100">
+                        <img
+                        src="https://picsum.photos/seed/mouse/600/400"
+                        alt="Mouse Gaming"
+                        class="product-img"
+                        loading="lazy"
+                        width="600"
+                        height="400"
+                        />
+                        <span class="absolute top-3 left-3 bg-purple-500 text-white text-xs font-semibold px-3 py-1 rounded-full">Gaming</span>
+                    </div>
+                    <div class="p-4 md:p-5 flex flex-col flex-1">
+                        <h3 class="card-title font-semibold text-gray-800">Mouse Gaming</h3>
+                        <p class="card-desc text-gray-500 mt-1 flex-1">Sensor 16000 DPI, 8 tombol, RGB</p>
+                        <div class="mt-3 flex items-end justify-between">
+                            <span class="card-price text-indigo-600">Rp349.000</span>
+                            <button class="btn-cart bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm shadow-indigo-200 transition-all">
+                                <i class="fa-solid fa-plus mr-1"></i> Beli
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- end grid -->
+
+            <!-- Info tambahan -->
+            <p class="text-center text-sm text-gray-400 mt-8">
+                <i class="fa-solid fa-cubes mr-1.5"></i>
+                Menampilkan 8 produk — <span class="font-medium text-gray-500">1 → 2 → 3 → 4 kolom</span> sesuai lebar layar
+            </p>
+
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- TENTANG & KONTAK (section pendukung)                         -->
+    <!-- ============================================================ -->
+    <section id="tentang" class="py-12 md:py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+
+                <div>
+                    <div class="flex items-center justify-center md:justify-start gap-3 mb-3">
+                        <i class="fa-solid fa-shield-halved text-indigo-500 text-2xl"></i>
+                        <h3 class="text-lg font-bold text-gray-800">Kualitas Terjamin</h3>
+                    </div>
+                    <p class="text-gray-500 text-sm">Setiap produk melewati seleksi ketat untuk memastikan kualitas terbaik.</p>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-center md:justify-start gap-3 mb-3">
+                        <i class="fa-solid fa-truck-fast text-indigo-500 text-2xl"></i>
+                        <h3 class="text-lg font-bold text-gray-800">Pengiriman Cepat</h3>
+                    </div>
+                    <p class="text-gray-500 text-sm">Proses pesanan cepat dan aman, sampai di tangan Anda tepat waktu.</p>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-center md:justify-start gap-3 mb-3">
+                        <i class="fa-solid fa-headset text-indigo-500 text-2xl"></i>
+                        <h3 class="text-lg font-bold text-gray-800">Dukungan 24/7</h3>
+                    </div>
+                    <p class="text-gray-500 text-sm">Tim support siap membantu kapan saja via chat atau telepon.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- FOOTER RESPONSIF (req #8)                                    -->
+    <!-- ============================================================ -->
+    <footer id="kontak" class="bg-gray-900 text-gray-300 pt-12 pb-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pb-8 border-b border-gray-800">
+
+                <!-- Brand -->
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fa-solid fa-cube text-indigo-400 text-2xl"></i>
+                        <span class="text-white font-bold text-lg tracking-tight">Katalog<span class="text-indigo-400">Pro</span></span>
+                    </div>
+                    <p class="footer-text text-gray-400 max-w-xs">
+                        Platform katalog produk modern yang membantu Anda menemukan barang berkualitas dengan mudah.
+                    </p>
+                    <div class="flex gap-4 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors text-lg"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors text-lg"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors text-lg"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors text-lg"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <!-- Links -->
+                <div>
+                    <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-3">Tautan</h4>
+                    <ul class="space-y-2 footer-text">
+                        <li><a href="#" class="hover:text-white transition-colors">Beranda</a></li>
+                        <li><a href="#produk" class="hover:text-white transition-colors">Katalog</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Promo</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+                    </ul>
+                </div>
+
+                <!-- Bantuan -->
+                <div>
+                    <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-3">Bantuan</h4>
+                    <ul class="space-y-2 footer-text">
+                        <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Pengiriman</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Pengembalian</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Hubungi Kami</a></li>
+                    </ul>
+                </div>
+
+                <!-- Kontak & Alamat -->
+                <div>
+                    <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-3">Kontak</h4>
+                    <ul class="space-y-2 footer-text">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-location-dot text-indigo-400 mt-0.5"></i>
+                            <span>Jl. Taduan no.75a  medan </span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fa-solid fa-phone text-indigo-400"></i>
+                            <span>+62 812 7484 3145</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fa-solid fa-envelope text-indigo-400"></i>
+                            <span>laptopkita.@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Copyright -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-6 footer-text text-gray-500">
+                <span>
+                    &copy; 2026 <span class="text-gray-400 font-medium">KatalogPro</span>.
+                    Dibangun dengan <i class="fa-solid fa-heart text-red-500 text-xs"></i> dan Tailwind CSS.
+                </span>
+                <span class="text-xs tracking-wide">
+                    <i class="fa-regular fa-registered mr-1"></i>
+                    NAYLA SALSABILA — Tugas Rutin 3
+                </span>
+            </div>
+
+        </div>
+    </footer>
+
+
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT — Toggle hamburger & utility                      -->
+    <!-- ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const bars = hamburgerBtn.querySelectorAll('.bar1, .bar2, .bar3');
+
+            let isOpen = false;
+
+            function toggleMenu() {
+                isOpen = !isOpen;
+
+                // Toggle class untuk animasi hamburger
+                hamburgerBtn.classList.toggle('hamburger-active', isOpen);
+
+                // Toggle class untuk menu
+                mobileMenu.classList.toggle('open', isOpen);
+
+                // Accessibility
+                hamburgerBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            }
+
+            // Event listener
+            hamburgerBtn.addEventListener('click', toggleMenu);
+
+            // Tutup menu saat link di dalam mobile menu diklik
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (isOpen) toggleMenu();
+                });
+            });
+
+            // Tutup menu saat resize ke desktop
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768 && isOpen) {
+                    toggleMenu();
+                }
+            });
+
+        })();
+
+        // ============================================================
+        // DOKUMENTASI TESTING — screenshot 3 breakpoint (req #9)
+        // ============================================================
+        // Untuk melakukan dokumentasi testing, buka halaman ini di browser,
+        // lalu buka DevTools (F12) dan gunakan mode Responsive (Ctrl+Shift+M).
+        // Ambil screenshot pada 3 ukuran layar:
+        //
+        //   1. Mobile  : 375px × 812px  (iPhone 12/13/14)
+        //   2. Tablet  : 768px × 1024px (iPad)
+        //   3. Desktop : 1280px × 800px (laptop/PC)
+        //
+        // Pastikan grid berubah: 1 kolom (mobile) → 2 kolom (tablet) → 3/4 kolom (desktop)
+        // Navbar menampilkan hamburger di mobile, dan menu full di desktop.
+        // Typography menggunakan clamp() — perhatikan ukuran font beradaptasi.
+        // ============================================================
+
+        console.log('✅ Katalog Produk Responsif siap!');
+        console.log('📱 Testing: buka DevTools → Responsive → screenshot 3 breakpoint.');
+    </script>
+
+</body>
+</html>
